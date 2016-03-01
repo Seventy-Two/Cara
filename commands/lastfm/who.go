@@ -56,7 +56,7 @@ func whosPlaying(command *bot.Cmd, matches []string) (msg string, err error) {
 
 			fmttags = strings.TrimSuffix(fmttags, ", ")
 		}
-		nick = bot.GetUserKey(user, "nickname")
+		nick := bot.GetUserKey(user, "nickname")
 		if nick != "" {
 			user = nick
 		}

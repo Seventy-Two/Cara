@@ -43,6 +43,6 @@ func eightBall(command *bot.Cmd, matches []string) (msg string, err error) {
 
 func init() {
 	bot.RegisterCommand(
-		"^8ball",
+		"^.*\\?{1}$",
 		eightBall)
 }

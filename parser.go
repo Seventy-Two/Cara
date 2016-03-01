@@ -11,17 +11,34 @@ var (
 
 func parse(s string, channel string, nick string) *Cmd {
 	c := &Cmd{Raw: s}
+	hyp := []rune(s) // 
+
+	// Remove those retarded fullwidth characters that one guy uses
+	for i := 0; i < len(hyp); i++ {
+		if hyp[i] >= 65281 && hyp[i] <= 65370{
+	        hyp[i] -= 65248
+	    } 
+	    if hyp[i] == 12288 {
+	    	hyp[i] = 32
+	    }
+    }
+    s = string(hyp)
+
 	s = strings.TrimSpace(s)
 
-	if !strings.HasPrefix(s, Config.Prefix) {
+	if !strings.HasPrefix(s, Config.User) && !strings.HasPrefix(s, Config.Prefix){
 		return nil
 	}
 
 	c.Channel = strings.TrimSpace(channel)
 	c.Nick = strings.TrimSpace(nick)
-
 	// Trim the prefix and extra spaces
-	c.Message = strings.TrimPrefix(s, Config.Prefix)
+	if strings.HasPrefix(s, Config.User){
+		c.Message = strings.TrimPrefix(s, Config.User + ":")
+		c.Message = strings.TrimPrefix(c.Message, Config.User + ",")
+	} else {
+		c.Message = strings.TrimPrefix(s, Config.Prefix)
+	}
 	c.Message = strings.TrimSpace(c.Message)
 
 	// check if we have the command and not only the prefix

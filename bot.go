@@ -146,9 +146,9 @@ func onEndOfMotd(e *irc.Event) {
 }
 
 func GetNames(channel string) []string {
-	ChannelNicks[channel] = []string{}
 	Conn.SendRaw(fmt.Sprintf("NAMES %v", channel))
 	time.Sleep(1 * time.Second)
+	
 	return ChannelNicks[channel]
 }
 

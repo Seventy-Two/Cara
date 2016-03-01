@@ -9,6 +9,11 @@ import (
 )
 
 func whosPlaying(command *bot.Cmd, matches []string) (msg string, err error) {
+
+	if time.Now().Hour() >= 23 || time.Now().Hour() <= 7 {
+		return "It's bedtime.", nil
+	}
+
 	users := bot.GetNames(strings.ToLower(command.Channel))
 
 	var playing []string
@@ -61,7 +66,6 @@ func whosPlaying(command *bot.Cmd, matches []string) (msg string, err error) {
 
 		time.Sleep(500 * time.Millisecond)
 	}
-
 	return "", nil
 }
 

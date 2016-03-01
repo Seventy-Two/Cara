@@ -1,4 +1,4 @@
-# Porygon2
+# Cara
 
 An IRC Bot written in Go
 
@@ -7,8 +7,8 @@ An IRC Bot written in Go
 # Dependencies
 go get github.com/thoj/go-ircevent github.com/steveyen/gkvlite github.com/PuerkitoBio/goquery github.com/dustin/go-humanize github.com/kennygrant/sanitize gopkg.in/xmlpath.v2 github.com/kennygrant/sanitize github.com/kurrik/oauth1a github.com/kurrik/twittergo
 
-# Porygon2
-go get github.com/0x263b/Porygon2
+# Cara
+go get github.com/Seventy-Two/Cara
 ```
 
 ### Example
@@ -16,19 +16,19 @@ go get github.com/0x263b/Porygon2
 package main
 
 import (
-	"github.com/0x263b/Porygon2"
-	_ "github.com/0x263b/Porygon2/commands/8ball"
-	_ "github.com/0x263b/Porygon2/commands/admin"
-	_ "github.com/0x263b/Porygon2/commands/choose"
-	_ "github.com/0x263b/Porygon2/commands/google"
-	_ "github.com/0x263b/Porygon2/commands/lastfm"
-	_ "github.com/0x263b/Porygon2/commands/opengraph"
-	_ "github.com/0x263b/Porygon2/commands/translate"
-	_ "github.com/0x263b/Porygon2/commands/twitter"
-	_ "github.com/0x263b/Porygon2/commands/urbandictionary"
-	_ "github.com/0x263b/Porygon2/commands/weather"
-	_ "github.com/0x263b/Porygon2/commands/wolfram"
-	_ "github.com/0x263b/Porygon2/commands/youtube"
+	"github.com/Seventy-Two/Cara"
+	_ "github.com/Seventy-Two/Cara/commands/8ball"
+	_ "github.com/Seventy-Two/Cara/commands/admin"
+	_ "github.com/Seventy-Two/Cara/commands/choose"
+	_ "github.com/Seventy-Two/Cara/commands/google"
+	_ "github.com/Seventy-Two/Cara/commands/lastfm"
+	_ "github.com/Seventy-Two/Cara/commands/opengraph"
+	_ "github.com/Seventy-Two/Cara/commands/translate"
+	_ "github.com/Seventy-Two/Cara/commands/twitter"
+	_ "github.com/Seventy-Two/Cara/commands/urbandictionary"
+	_ "github.com/Seventy-Two/Cara/commands/weather"
+	_ "github.com/Seventy-Two/Cara/commands/wolfram"
+	_ "github.com/Seventy-Two/Cara/commands/youtube"
 )
 
 func main() {
@@ -39,9 +39,9 @@ func main() {
 func newConfig() *bot.Configure {
 	return &bot.Configure{
 		Server:   "irc.rizon.net:6697", // "server:port"
-		Channel:  "#Porygon2",          // "#channel" or "#channel key"
-		User:     "Porygon2",           // "bot"
-		Nick:     "Porygon2",           // "bot"
+		Channel:  "#Cara",          // "#channel" or "#channel key"
+		User:     "Cara",           // "bot"
+		Nick:     "Cara",           // "bot"
 		Nickserv: "some password",      // leave as "" if none
 		Modes:    "GRp",                // "GRp"
 		UseTLS:   true,                 // true/false
@@ -66,12 +66,12 @@ func newConfig() *bot.Configure {
 
 #### Ubuntu service
 
-Save as `/etc/init/porygon2.conf` and run `service porygon2 start`
+Save as `/etc/init/Cara.conf` and run `service Cara start`
 
 ```
 # Upstart Configuration
 
-description     "Porygon2"
+description     "Cara"
 author          "Black Smiling Face"
 
 start on (net-device-up
@@ -82,7 +82,7 @@ stop on runlevel [016]
 
 respawn
 
-exec /path/to/porygon2
+exec /path/to/Cara
 ```
 
 #### APIs
@@ -299,28 +299,28 @@ Ignore a user
 **-set ignore** *nick*
 
 	-set ignore Cbbleh
-	<Porygon2> I never liked him anyway
+	<Cara> I never liked him anyway
 	
 Unignore a user
 
 **-set unignore** *nick*
 
 	-set unignore Cbbleh
-	<Porygon2> Sorry about that
+	<Cara> Sorry about that
 	
 Toggles the URL parser for the channel
 
 **-set urls on/off** *channel*
 
 	-set urls on #lobby
-	<Porygon2> Now reacting to URLs in #lobby
+	<Cara> Now reacting to URLs in #lobby
 	
 Toggles the file URL parser for the channel
 
 **-set files on/off** *channel*
 
 	-set files on #lobby
-	<Porygon2> No longer displaying file info in #lobby	
+	<Cara> No longer displaying file info in #lobby	
 Joins a channel and adds it to auto join
 
 **-join** *channel*

@@ -2,8 +2,8 @@ package gif
 
 import (
 	"fmt"
-	"github.com/0x263b/Porygon2"
-	"github.com/0x263b/Porygon2/web"
+	"github.com/Seventy-Two/Cara"
+	"github.com/Seventy-Two/Cara/web"
 	"math/rand"
 	"net/url"
 	"time"

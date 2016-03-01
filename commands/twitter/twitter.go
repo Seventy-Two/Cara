@@ -3,7 +3,7 @@ package twitter
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/0x263b/Porygon2"
+	"github.com/Seventy-Two/Cara"
 	"github.com/kurrik/oauth1a"
 	"github.com/kurrik/twittergo"
 	"net/http"

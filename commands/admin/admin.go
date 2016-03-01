@@ -2,13 +2,13 @@ package admin
 
 import (
 	"fmt"
-	"github.com/0x263b/Porygon2"
+	"github.com/Seventy-Two/Cara"
 	"github.com/steveyen/gkvlite"
 	"strings"
 )
 
 const (
-	helpURL = "https://github.com/0x263b/Porygon2#functions"
+	helpURL = "https://github.com/Seventy-Two/Cara#functions"
 )
 
 func help(command *bot.Cmd, matches []string) (msg string, err error) {

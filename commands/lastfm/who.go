@@ -2,8 +2,8 @@ package lastfm
 
 import (
 	"fmt"
-	"github.com/0x263b/Porygon2"
-	"github.com/0x263b/Porygon2/web"
+	"github.com/Seventy-Two/Cara"
+	"github.com/Seventy-Two/Cara/web"
 	"strings"
 	"time"
 )
@@ -56,7 +56,10 @@ func whosPlaying(command *bot.Cmd, matches []string) (msg string, err error) {
 
 			fmttags = strings.TrimSuffix(fmttags, ", ")
 		}
-
+		nick = bot.GetUserKey(user, "nickname")
+		if nick != "" {
+			user = nick
+		}
 		bot.Conn.Privmsg(command.Channel, fmt.Sprintf("%s (%s) | “%s” by %s | %s",
 			user,
 			username,

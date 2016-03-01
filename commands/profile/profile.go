@@ -2,7 +2,7 @@ package profile
 
 import (
 	"fmt"
-	"github.com/0x263b/Porygon2"
+	"github.com/Seventy-Two/Cara"
 	"strings"
 )
 
@@ -37,8 +37,14 @@ func setTwitter(command *bot.Cmd, matches []string) (msg string, err error) {
 	return fmt.Sprintf("%s: twitter updated to: %s", command.Nick, matches[1]), nil
 }
 
+func setNick(command *bot.Cmd, matches []string) (msg string, err error) {
+	bot.SetUserKey(command.Nick, "nickname", strings.TrimSpace(matches[1]))
+	return fmt.Sprintf("%s: nickname updated to %s", command.Nick, matches[1]), nil
+}
+
 func init() {
 	bot.RegisterCommand("^set url (.+)$", setUrl)
 	bot.RegisterCommand("^set twitter (\\S+)$", setTwitter)
 	bot.RegisterCommand("^whois (\\S+)$", whoIs)
+	bot.RegisterCommand("^set nick (\\S+)$", setNick)
 }

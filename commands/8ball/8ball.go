@@ -2,7 +2,7 @@ package eightBall
 
 import (
 	"fmt"
-	"github.com/0x263b/Porygon2"
+	"github.com/Seventy-Two/Cara"
 	"math/rand"
 	"time"
 )

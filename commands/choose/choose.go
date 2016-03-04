@@ -9,7 +9,7 @@ import (
 )
 
 func random(min, max int) int {
-	rand.Seed(time.Now().Unix())
+	rand.Seed(time.Now().UnixNano())
 	return rand.Intn(max-min) + min
 }
 
@@ -22,6 +22,6 @@ func choose(command *bot.Cmd, matches []string) (msg string, err error) {
 
 func init() {
 	bot.RegisterCommand(
-		"^r(?:and)? (.+)$",
+		"^r(?:and)? (.+)\\|(.+)$",
 		choose)
 }

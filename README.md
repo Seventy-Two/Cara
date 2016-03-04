@@ -11,80 +11,6 @@ go get github.com/thoj/go-ircevent github.com/steveyen/gkvlite github.com/Puerki
 go get github.com/Seventy-Two/Cara
 ```
 
-### Example
-```Go
-package main
-
-import (
-	"github.com/Seventy-Two/Cara"
-	_ "github.com/Seventy-Two/Cara/commands/8ball"
-	_ "github.com/Seventy-Two/Cara/commands/admin"
-	_ "github.com/Seventy-Two/Cara/commands/choose"
-	_ "github.com/Seventy-Two/Cara/commands/google"
-	_ "github.com/Seventy-Two/Cara/commands/lastfm"
-	_ "github.com/Seventy-Two/Cara/commands/opengraph"
-	_ "github.com/Seventy-Two/Cara/commands/translate"
-	_ "github.com/Seventy-Two/Cara/commands/twitter"
-	_ "github.com/Seventy-Two/Cara/commands/urbandictionary"
-	_ "github.com/Seventy-Two/Cara/commands/weather"
-	_ "github.com/Seventy-Two/Cara/commands/wolfram"
-	_ "github.com/Seventy-Two/Cara/commands/youtube"
-)
-
-func main() {
-	config := newConfig()
-	bot.Run(config)
-}
-
-func newConfig() *bot.Configure {
-	return &bot.Configure{
-		Server:   "irc.rizon.net:6697", // "server:port"
-		Channel:  "#Cara",          // "#channel" or "#channel key"
-		User:     "Cara",           // "bot"
-		Nick:     "Cara",           // "bot"
-		Nickserv: "some password",      // leave as "" if none
-		Modes:    "GRp",                // "GRp"
-		UseTLS:   true,                 // true/false
-		Debug:    false,                // true/false
-		Prefix:   "!",                  // "!"
-		Owner:    "joe",                // your nick
-		API: bot.API{
-			Lastfm:                "",
-			Giphy:                 "",
-			Geocode:               "",
-			TranslateClient:       "",
-			TranslateSecret:       "",
-			TwitterConsumerKey:    "",
-			TwitterConsumerSecret: "",
-			Weather:               "",
-			Wolfram:               "",
-			Youtube:               "",
-		},
-	}
-}
-```
-
-#### Ubuntu service
-
-Save as `/etc/init/Cara.conf` and run `service Cara start`
-
-```
-# Upstart Configuration
-
-description     "Cara"
-author          "Black Smiling Face"
-
-start on (net-device-up
-          and local-filesystems
-          and runlevel [2345])
-
-stop on runlevel [016]
-
-respawn
-
-exec /path/to/Cara
-```
-
 #### APIs
 
 * [Giphy](https://github.com/Giphy/GiphyAPI): [commands/giphy](commands/giphy/giphy.go)
@@ -104,7 +30,6 @@ exec /path/to/Cara
 * [Google](#google)
 * [Lastfm](#lastfm)
 * [Random](#random)
-* [Translate](#translate)
 * [Twitter](#twitter)
 * [Urban Dictionary](#urban-dictionary)
 * [URL Parser](#url-parser)
@@ -175,32 +100,6 @@ Randomly picks an option from an array separated by |
 
 	.r do work | don't do work
 	don't do work
-
-
-### Translate
-Translates *text* using [Bing translate](http://www.bing.com/translator) and provides a link to [Google Translate](http://translate.google.com/)
-
-**.tr/.translate** *from to text*
-
-	.translate en fr pig disgusting
-	Translate | http://mnn.im/uoo4u | en=>fr | "porc écoeurant"
-
-| code | Language           | code | Language           | code | Language |
-| ---: | :----------------- | ---: | :----------------- | ---: | :------- |
-| ar   | Arabic					| ht   | Haitian Creole		| fa   | Persian (Farsi) 
-| bg   | Bulgarian				| he   | Hebrew				| pl   | Polish	
-| ca   | Catalan				| hi   | Hindi				| ro   | Romanian
-| cn   | Chinese Simplified		| mww  | Himong Daw			| ru   | Russian
-| tw   | Chinese Traditional 	| hu   | Hungarian			| sk   | Slovak
-| cs   | Czech					| id   | Indonesian			| sl   | Slovenian
-| da   | Danish					| it   | Italian			| es   | Spanish
-| nl   | Dutch					| ja   | Japanese			| sv   | Swedish
-| en   | English				| ko   | Korean				| th   | Thai
-| et   | Estonian				| lv   | Latvian			| tr   | Turkish
-| fi   | Finnish				| lt   | Lithuanian			| uk   | Ukrainian
-| fr   | French					| ms   | Malay				| ur   | Urdu
-| de   | German					| mt   | Maltese			| vi   | Vietnamese
-| el   | Greek					| no   | Norwegian
 
 
 ### Twitter

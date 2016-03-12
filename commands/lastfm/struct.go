@@ -77,3 +77,20 @@ type WeeklyCharts struct {
 	Message string        `json:"message"`
 	Links   []interface{} `json:"links"`
 }
+
+type Info struct {
+	ArtInfo struct {
+		Tags struct {
+			Tag []struct {
+				Name  string `json:"name"`
+				URL   string `json:"url"`
+			} `json:"tag"`
+		} `json:"tags"`
+		Bio struct {
+			Summary string `json:"summary"`
+			Content string `json:"content"`
+		} `json:"bio"`
+		Name  string `json:"name"`
+		URL   string `json:"url"`
+	} `json:"artist"`
+}

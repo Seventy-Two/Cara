@@ -10,7 +10,7 @@ import (
 
 func whosPlaying(command *bot.Cmd, matches []string) (msg string, err error) {
 
-	if time.Now().Hour() >= 00 || time.Now().Hour() <= 7 {
+	if time.Now().Hour() >= 0 && time.Now().Hour() <= 7 {
 		return "It's bedtime.", nil
 	}
 

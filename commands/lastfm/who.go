@@ -10,7 +10,7 @@ import (
 
 func whosPlaying(command *bot.Cmd, matches []string) (msg string, err error) {
 
-	if time.Now().Hour() >= 23 || time.Now().Hour() <= 7 {
+	if time.Now().Hour() >= 00 || time.Now().Hour() <= 7 {
 		return "It's bedtime.", nil
 	}
 
@@ -43,7 +43,7 @@ func whosPlaying(command *bot.Cmd, matches []string) (msg string, err error) {
 		var fmttags string
 		if len(data.Recenttracks.Track[0].Artist.Mbid) > 10 {
 			tags := &ArtistTags{}
-			err = web.GetJSON(fmt.Sprintf(ArtistTagsURL, data.Recenttracks.Track[0].Artist.Mbid, bot.Config.API.Lastfm), tags)
+			err = web.GetJSON(fmt.Sprintf(MBIDTagsURL, data.Recenttracks.Track[0].Artist.Mbid, bot.Config.API.Lastfm), tags)
 			if err != nil {
 				continue
 			}

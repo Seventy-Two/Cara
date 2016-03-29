@@ -5,6 +5,7 @@ import (
 	"log"
 	"regexp"
 	"sync"
+	"time"
 )
 
 // Cmd holds the parsed user's input for easier handling of commands
@@ -27,8 +28,10 @@ type PassiveCmd struct {
 
 type customCommand struct {
 	Version int
-	Cmd     *regexp.Regexp
-	CmdFunc activeCmdFunc
+	Cmd    		  *regexp.Regexp
+	CmdFunc 	  activeCmdFunc
+	MultiCmdFunc  activeMultiCmdFunc
+	IsMulti		  bool
 }
 
 type incomingMessage struct {
@@ -46,6 +49,7 @@ const (
 
 type passiveCmdFunc func(cmd *PassiveCmd) (string, error)
 type activeCmdFunc func(cmd *Cmd, matches []string) (string, error)
+type activeMultiCmdFunc func(cmd *Cmd, matches []string) ([]string, error)
 
 var (
 	commands        = make(map[string]*customCommand)
@@ -56,6 +60,15 @@ func RegisterCommand(command string, cmdFunc activeCmdFunc) {
 	commands[command] = &customCommand{
 		Cmd:     regexp.MustCompile(command),
 		CmdFunc: cmdFunc,
+		IsMulti: false,
+	}
+}
+
+func RegisterMultiCommand(command string, cmdFunc activeMultiCmdFunc) {
+	commands[command] = &customCommand{
+		Cmd:	 regexp.MustCompile(command),
+		MultiCmdFunc: cmdFunc,
+		IsMulti: true,
 	}
 }
 
@@ -142,12 +155,27 @@ func executePassiveCommands(cmd *PassiveCmd, conn ircConnection) {
 
 func handleCmd(c *Cmd, conn ircConnection) {
 	for _, k := range commands {
-		if matches := k.Cmd.FindStringSubmatch(c.Message); len(matches) > 0 {
-			message, err := k.CmdFunc(c, matches)
-			checkCmdError(err, c, conn)
-			if message != "" {
-				conn.Privmsg(c.Channel, message)
-			}
+			if matches := k.Cmd.FindStringSubmatch(c.Message); len(matches) > 0 {
+				var messages []string
+				var message string
+				var err error
+				if k.IsMulti {
+					messages, err = k.MultiCmdFunc(c, matches)
+				} else {
+					message, err = k.CmdFunc(c, matches)	// messages[0] doesn't work ???
+				}
+				checkCmdError(err, c, conn)
+				if message != "" {
+					conn.Privmsg(c.Channel, message)
+				}
+				if len(messages) > 0 {
+					for i := 0; i < len(messages); i++ {
+						conn.Privmsg(c.Channel, messages[i])
+						if i > 4 {
+							time.Sleep(550 * time.Millisecond)	// We're allowed 2lines/sec + 5 line burst but lets keep it safe right?
+						}
+					} 
+				}
 		}
 	}
 

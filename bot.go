@@ -43,6 +43,8 @@ type API struct {
 	Wolfram               string
 	Youtube               string
 	Geocode               string
+	FootballData	      string
+	Dota				  string 
 }
 
 type ircConnection interface {
@@ -89,6 +91,10 @@ func logChannel(channel, text, senderNick string, action bool) {
 
 	log.Println(line)
 	return
+}
+
+func Out(text string) {
+	log.Println(text)
 }
 
 func onPRIVMSG(e *irc.Event) {

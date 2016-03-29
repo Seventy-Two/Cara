@@ -56,6 +56,6 @@ func forecast(command *bot.Cmd, matches []string) (msg string, err error) {
 
 func init() {
 	bot.RegisterCommand(
-		"^f(?:o(?:recast)?)?(?: (.+))?$",
+		"^fo(?:recast)?(?: (.+))?$",
 		forecast)
 }

@@ -19,9 +19,11 @@ func roll(command *bot.Cmd, matches []string) (msg string, err error) {
 	var dice []string = strings.Split((strings.Split(matches[0], " ")[1]), "d")
 	var sides int
 
-	if dice[1] == "0" {
-		msg =fmt.Sprintf("You stupid cunt")
-		return
+	if len(dice) > 1 {
+		if dice[1] == "0" {
+			msg =fmt.Sprintf("You stupid cunt")
+			return
+		}
 	}
 
 	rollnum, _ := strconv.Atoi(dice[0])

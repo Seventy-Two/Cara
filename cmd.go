@@ -174,8 +174,9 @@ func handleCmd(c *Cmd, conn ircConnection) {
 						if i > 4 {
 							time.Sleep(550 * time.Millisecond)	// We're allowed 2lines/sec + 5 line burst but lets keep it safe right?
 						}
-					} 
-				}
+					}
+				time.Sleep(1 * time.Second) // Some idiot will probably ask for two 4 line multiline commands simultaneously and Cara will get killed ;_;	 
+				} 
 		}
 	}
 

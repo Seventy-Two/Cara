@@ -45,6 +45,7 @@ type API struct {
 	Geocode               string
 	FootballData	      string
 	Dota				  string 
+	Wordnik				  string
 }
 
 type ircConnection interface {

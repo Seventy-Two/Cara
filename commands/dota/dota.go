@@ -5,12 +5,15 @@ import (
 	"github.com/Seventy-Two/Cara"
 	"github.com/Seventy-Two/Cara/web"
 	"strings"
+	"strconv"
+	"time"
 )
 
 const (
 	dotaLeagueURL = "http://api.steampowered.com/IDOTA2Match_570/GetLiveLeagueGames/v1/?key=%s"
 	dotaListingURL = "http://api.steampowered.com/IDOTA2Match_570/GetLeagueListing/v1/?key=%s"
 	dotaMatchURL = "http://api.steampowered.com/IDOTA2Match_570/GetMatchDetails/v1/?key=%s"
+	Timer = "15:04:05"
 )
 
 func dotamatches(command *bot.Cmd, matches []string) (msg []string, err error) {
@@ -58,25 +61,35 @@ func dotamatches(command *bot.Cmd, matches []string) (msg []string, err error) {
 				direNet += data.Result.Games[i].Scoreboard.Dire.Players[j].NetWorth
 			}
 			worth = radiantNet - direNet
+			radTower, direTower := towerToString(data.Result.Games[i].Scoreboard.Radiant.TowerState, data.Result.Games[i].Scoreboard.Dire.TowerState)
+
+			duration := int(data.Result.Games[i].Scoreboard.Duration)
+			t := fmt.Sprintf((time.Date(0, 0, 0, 0, 0, 0, 0, time.UTC).Add(time.Duration(duration) * time.Second)).Format(Timer))
 
 			if worth > 0 {
-				str = append(str, fmt.Sprintf("\x0307net+%d \x0303%s\x03 %d-%d \x0304%s\x03 [Game %d, %d viewers, League: %s]" , 
+				str = append(str, fmt.Sprintf("\x0307net+%d \x0303%s\x03 %s %d-%d %s \x0304%s\x03 [%s Game %d, %d viewers, League: %s]" , 
 																												     worth, 
-																													 radiant, 
+																													 radiant,
+																													 radTower,
 																													 radiantScore, 
-																													 direScore, 
-																													 dire, 
+																													 direScore,
+																													 direTower, 
+																													 dire,
+																													 t,
 																													 game, 
 																													 viewers,
 																													 leaguename))
 			} else {
 				worth = -worth
-				str = append(str, fmt.Sprintf("\x0303%s\x03 %d-%d \x0304%s \x0307net+%d\x03 [Game %d, %d viewers, League: %s]", 
+				str = append(str, fmt.Sprintf("\x0303%s\x03 %s %d-%d %s \x0304%s \x0307net+%d\x03 [%s Game %d, %d viewers, League: %s]", 
 																												     radiant, 
+																												     radTower,
 																													 radiantScore, 
-																													 direScore, 
+																													 direScore,
+																													 direTower, 
 																													 dire, 
-																													 worth, 
+																													 worth,
+																													 t, 
 																													 game, 
 																													 viewers,
 																													 leaguename))
@@ -89,6 +102,54 @@ func dotamatches(command *bot.Cmd, matches []string) (msg []string, err error) {
 	}
 	return str, nil
 }
+
+func towerToString(rad int, dire int) (radTower string, direTower string) {
+	towerUp := "♜"
+	towerDown := "♖"
+	ancient := "♚"
+	radstr := ancient + fmt.Sprintf(strconv.FormatInt(int64(rad), 2))
+	radstr = organise(radstr)
+	radstr = strings.Replace(radstr, "0", towerDown, -1)
+	radstr = strings.Replace(radstr, "1", towerUp, -1)
+
+	direstr := ancient + fmt.Sprintf(strconv.FormatInt(int64(dire),2))
+	direstr = organise(direstr)
+	var tempstr string
+	for _,v := range direstr {
+  	  tempstr = string(v) + tempstr	// because allow runes and unicode 
+  	}
+  	direstr = tempstr
+	direstr = strings.Replace(direstr, "0", towerDown, -1)
+	direstr = strings.Replace(direstr, "1", towerUp, -1)
+
+	return radstr, direstr
+}
+
+func organise(in string) (out string) {
+	// volvo returns towers grouped by top/mid/bot, when we want towers grouped by tier
+	tempin := []rune(in)
+	var tempout []rune
+	tempout = append(tempout, tempin[0])
+	tempout = append(tempout, ' ')
+	tempout = append(tempout, tempin[1])
+	tempout = append(tempout, tempin[2])
+	tempout = append(tempout, ' ')
+	tempout = append(tempout, tempin[3])
+	tempout = append(tempout, tempin[6])
+	tempout = append(tempout, tempin[9])
+	tempout = append(tempout, ' ')
+	tempout = append(tempout, tempin[4])
+	tempout = append(tempout, tempin[7])
+	tempout = append(tempout, tempin[10])
+	tempout = append(tempout, ' ')
+	tempout = append(tempout, tempin[5])
+	tempout = append(tempout, tempin[8])
+	tempout = append(tempout, tempin[11])
+	out = string(tempout)
+	return out
+}
+
+
 
 func init() {
 	bot.RegisterMultiCommand(

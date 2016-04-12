@@ -38,7 +38,7 @@ func dotamatches(command *bot.Cmd, matches []string) (msg []string, err error) {
 		worth = 0
 		radiantNet = 0
 		direNet = 0
-		if data.Result.Games[i].LeagueTier == 2 && data.Result.Games[i].Spectators >= 500 {
+		if data.Result.Games[i].LeagueTier >= 2 && data.Result.Games[i].Spectators >= 500 {
 			radiant := data.Result.Games[i].RadiantTeam.TeamName
 			dire 	:= data.Result.Games[i].DireTeam.TeamName
 			radiantScore := data.Result.Games[i].Scoreboard.Radiant.Score

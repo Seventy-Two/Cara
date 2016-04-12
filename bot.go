@@ -179,7 +179,7 @@ func onEndOfNames(e *irc.Event) {
 
 func onKick(e *irc.Event) {
 	if e.Arguments[1] == Config.Nick {
-		time.Sleep(2 * time.Second)
+		time.Sleep(5 * time.Second)
 		Conn.Join(e.Arguments[0])
 	}
 }

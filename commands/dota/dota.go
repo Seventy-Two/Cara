@@ -5,7 +5,6 @@ import (
 	"github.com/Seventy-Two/Cara"
 	"github.com/Seventy-Two/Cara/web"
 	"strings"
-	"strconv"
 	"time"
 )
 
@@ -22,14 +21,14 @@ func dotamatches(command *bot.Cmd, matches []string) (msg []string, err error) {
 	var radiantNet int 
 	var direNet int
 	var worth int
-	err = web.GetJSON(fmt.Sprintf(dotaLeagueURL, bot.Config.API.Dota), data)
-	if err != nil {
-		msg = append(msg, fmt.Sprintf("Could not retrieve matches."))
-		return msg, nil
-	}
 	err = web.GetJSON(fmt.Sprintf(dotaListingURL, bot.Config.API.Dota), listing)
 	if err != nil {
 		msg = append(msg, fmt.Sprintf("Could not retrieve league listings."))
+		return msg, nil
+	}
+	err = web.GetJSON(fmt.Sprintf(dotaLeagueURL, bot.Config.API.Dota), data)
+	if err != nil {
+		msg = append(msg, fmt.Sprintf("Could not retrieve matches."))
 		return msg, nil
 	}
 	var str []string
@@ -38,7 +37,7 @@ func dotamatches(command *bot.Cmd, matches []string) (msg []string, err error) {
 		worth = 0
 		radiantNet = 0
 		direNet = 0
-		if data.Result.Games[i].LeagueTier >= 2 && data.Result.Games[i].Spectators >= 500 {
+		if (data.Result.Games[i].LeagueTier == 2 && data.Result.Games[i].Spectators >= 500) || data.Result.Games[i].LeagueTier == 3 {
 			radiant := data.Result.Games[i].RadiantTeam.TeamName
 			dire 	:= data.Result.Games[i].DireTeam.TeamName
 			radiantScore := data.Result.Games[i].Scoreboard.Radiant.Score
@@ -107,12 +106,12 @@ func towerToString(rad int, dire int) (radTower string, direTower string) {
 	towerUp := "♜"
 	towerDown := "♖"
 	ancient := "♚"
-	radstr := ancient + fmt.Sprintf(strconv.FormatInt(int64(rad), 2))
+	radstr := ancient + fmt.Sprintf("%011b", int64(rad))
 	radstr = organise(radstr)
 	radstr = strings.Replace(radstr, "0", towerDown, -1)
 	radstr = strings.Replace(radstr, "1", towerUp, -1)
 
-	direstr := ancient + fmt.Sprintf(strconv.FormatInt(int64(dire),2))
+	direstr := ancient + fmt.Sprintf("%011b", int64(rad))
 	direstr = organise(direstr)
 	var tempstr string
 	for _,v := range direstr {

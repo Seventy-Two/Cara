@@ -15,7 +15,7 @@ const (
 )
 
 var (
-	frame  = "p1"
+	frame  = "n1"
 ) 
 
 func modifier(command *bot.Cmd, matches []string) (msg []string, err error) {

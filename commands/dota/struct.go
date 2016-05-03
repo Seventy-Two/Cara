@@ -137,3 +137,15 @@ type LeagueListing struct {
 		} `json:"leagues"`
 	} `json:"result"`
 }
+
+type GetHeroes struct {
+	Result struct {
+		Heroes []struct {
+			Name string `json:"name"`
+			ID int `json:"id"`
+			LocalizedName string `json:"localized_name"`
+		} `json:"heroes"`
+		Status int `json:"status"`
+		Count int `json:"count"`
+	} `json:"result"`
+}

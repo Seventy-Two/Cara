@@ -12,15 +12,25 @@ const (
 	dotaLeagueURL = "http://api.steampowered.com/IDOTA2Match_570/GetLiveLeagueGames/v1/?key=%s"
 	dotaListingURL = "http://api.steampowered.com/IDOTA2Match_570/GetLeagueListing/v1/?key=%s"
 	dotaMatchURL = "http://api.steampowered.com/IDOTA2Match_570/GetMatchDetails/v1/?key=%s"
+	dotaHeroesURL = "http://api.steampowered.com/IEconDOTA2_570/GetHeroes/v1/?language=en_gb&key=%s"
 	Timer = "15:04:05"
 )
 
 func dotamatches(command *bot.Cmd, matches []string) (msg []string, err error) {
 	data := &LeagueGames{}
 	listing := &LeagueListing{}
+	getHeroes := &GetHeroes{}
 	var radiantNet int 
 	var direNet int
 	var worth int
+	heroes := false
+	showScore := false
+	if strings.Contains(matches[0], "h") {
+		heroes = true
+	}
+	if strings.Contains(matches[0], "s") {
+		showScore = true
+	}
 	err = web.GetJSON(fmt.Sprintf(dotaListingURL, bot.Config.API.Dota), listing)
 	if err != nil {
 		msg = append(msg, fmt.Sprintf("Could not retrieve league listings."))
@@ -31,13 +41,23 @@ func dotamatches(command *bot.Cmd, matches []string) (msg []string, err error) {
 		msg = append(msg, fmt.Sprintf("Could not retrieve matches."))
 		return msg, nil
 	}
+	web.GetJSON(fmt.Sprintf(dotaHeroesURL, bot.Config.API.Dota), getHeroes)
+	if err != nil {
+		msg = append(msg, fmt.Sprintf("Could not retrieve heroes."))
+		return msg, nil
+	}
 	var str []string
-	var leaguename string
 	for i := 0; i < len(data.Result.Games) ; i++ {
 		worth = 0
 		radiantNet = 0
 		direNet = 0
-		if (data.Result.Games[i].LeagueTier == 2 && data.Result.Games[i].Spectators >= 500) || data.Result.Games[i].LeagueTier == 3 {
+		if (data.Result.Games[i].LeagueTier == 2 && data.Result.Games[i].Spectators >= 1000) || (data.Result.Games[i].LeagueTier == 3 && data.Result.Games[i].Spectators >= 200) {
+			var leaguename string
+			herostr := ""
+			radTower := ""
+			direTower := ""
+			radHeroes := []string{""}
+			direHeroes := []string{""}
 			radiant := data.Result.Games[i].RadiantTeam.TeamName
 			dire 	:= data.Result.Games[i].DireTeam.TeamName
 			radiantScore := data.Result.Games[i].Scoreboard.Radiant.Score
@@ -53,45 +73,72 @@ func dotamatches(command *bot.Cmd, matches []string) (msg []string, err error) {
 				}
 			}
 
+			duration := int(data.Result.Games[i].Scoreboard.Duration)
+			t := fmt.Sprintf((time.Date(0, 0, 0, 0, 0, 0, 0, time.UTC).Add(time.Duration(duration) * time.Second)).Format(Timer))
+
+
 			for j := 0; j < len(data.Result.Games[i].Scoreboard.Radiant.Players); j++ {
 				radiantNet += data.Result.Games[i].Scoreboard.Radiant.Players[j].NetWorth
+			}
+			if heroes {
+				for k := 0; k < len(data.Result.Games[i].Scoreboard.Radiant.Picks); k++ {
+					radHeroes = append(radHeroes, getHerofromID(data.Result.Games[i].Scoreboard.Radiant.Picks[k].HeroID, getHeroes))
+				}
 			}
 			for j := 0; j < len(data.Result.Games[i].Scoreboard.Dire.Players); j++ {
 				direNet += data.Result.Games[i].Scoreboard.Dire.Players[j].NetWorth
 			}
+			if heroes {
+				for k := 0; k < len(data.Result.Games[i].Scoreboard.Dire.Picks); k++ {
+					direHeroes = append(direHeroes, getHerofromID(data.Result.Games[i].Scoreboard.Dire.Picks[k].HeroID, getHeroes))
+				}
+			}
 			worth = radiantNet - direNet
-			radTower, direTower := towerToString(data.Result.Games[i].Scoreboard.Radiant.TowerState, data.Result.Games[i].Scoreboard.Dire.TowerState)
-
-			duration := int(data.Result.Games[i].Scoreboard.Duration)
-			t := fmt.Sprintf((time.Date(0, 0, 0, 0, 0, 0, 0, time.UTC).Add(time.Duration(duration) * time.Second)).Format(Timer))
-
-			if worth > 0 {
-				str = append(str, fmt.Sprintf("\x0307net+%d \x0303%s\x03 %s %d-%d %s \x0304%s\x03 [%s Game %d, %d viewers, League: %s]" , 
-																												     worth, 
-																													 radiant,
-																													 radTower,
-																													 radiantScore, 
-																													 direScore,
-																													 direTower, 
-																													 dire,
-																													 t,
-																													 game, 
-																													 viewers,
-																													 leaguename))
+			if showScore {
+				radTower, direTower = towerToString(data.Result.Games[i].Scoreboard.Radiant.TowerState, data.Result.Games[i].Scoreboard.Dire.TowerState)
+			}
+			if heroes {
+	 			herostr = fmt.Sprintf("\x0303%s\x03\x0304%s\x03|", strings.Join(radHeroes[:], "\x03|\x0303"), strings.Join(direHeroes[:], "\x03|\x0304"))
+	 		}
+	 		if showScore && worth != 0 {
+				if worth > 0 {
+					str = append(str, fmt.Sprintf("\x0307net+%d \x0303%s\x03 %s %d-%d %s \x0304%s\x03 [%s Game %d, %d viewers, League: %s %s]" , 
+																													     worth, 
+																														 radiant,
+																														 radTower,
+																														 radiantScore, 
+																														 direScore,
+																														 direTower, 
+																														 dire,
+																														 t,
+																														 game, 
+																														 viewers,
+																														 leaguename,
+																														 herostr))
+				} else {
+					worth = -worth
+					str = append(str, fmt.Sprintf("\x0303%s\x03 %s %d-%d %s \x0304%s \x0307net+%d\x03 [%s Game %d, %d viewers, League: %s %s]", 
+																													     radiant, 
+																													     radTower,
+																														 radiantScore, 
+																														 direScore,
+																														 direTower, 
+																														 dire, 
+																														 worth,
+																														 t, 
+																														 game, 
+																														 viewers,
+																														 leaguename,
+																														 herostr))
+				}
 			} else {
-				worth = -worth
-				str = append(str, fmt.Sprintf("\x0303%s\x03 %s %d-%d %s \x0304%s \x0307net+%d\x03 [%s Game %d, %d viewers, League: %s]", 
+				str = append(str, fmt.Sprintf("\x0303%s\x03 - \x0304%s\x03 [Game %d, %d viewers, League: %s %s]", 
 																												     radiant, 
-																												     radTower,
-																													 radiantScore, 
-																													 direScore,
-																													 direTower, 
 																													 dire, 
-																													 worth,
-																													 t, 
 																													 game, 
 																													 viewers,
-																													 leaguename))
+																													 leaguename,
+																													 herostr))	
 			}
 		}
 	}
@@ -148,10 +195,25 @@ func organise(in string) (out string) {
 	return out
 }
 
-
+func getHerofromID(id int, heroes *GetHeroes) (out string) {
+	if id == 0 {
+		return "PICK"
+	}
+	out = getShortHero(id)
+	if out != "" {
+		return out
+	}
+	for m := 0; m < len(heroes.Result.Heroes); m++ {
+		if heroes.Result.Heroes[m].ID == id {
+			out = heroes.Result.Heroes[m].LocalizedName
+			return out
+		}
+	}
+	return ""
+}
 
 func init() {
 	bot.RegisterMultiCommand(
-		"^(d2|dota)$",
+		"^(d2|dota)\\s?(h(?:ero)?)?\\s?(s(?:core)?)?$",
 		dotamatches)
 }

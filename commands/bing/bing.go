@@ -3,7 +3,7 @@ package bing
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/0x263b/porygon2"
+	"github.com/Seventy-Two/Cara"
 	"io/ioutil"
 	"net/http"
 	"net/url"

@@ -9,6 +9,7 @@ go get -u github.com/thoj/go-ircevent github.com/steveyen/gkvlite github.com/Pue
 
 # Cara
 go get github.com/Seventy-Two/Cara
+```
 
 #### APIs that require keys
 

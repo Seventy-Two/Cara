@@ -131,6 +131,7 @@ func connect() {
 		ServerName:         getServerName(),
 		InsecureSkipVerify: true,
 	}
+	Conn.Version = "Cara → https://github.com/Seventy-Two/Cara"
 	Conn.VerboseCallbackHandler = Config.Debug
 	err := Conn.Connect(Config.Server)
 	if err != nil {
@@ -156,6 +157,7 @@ func GetNames(channel string) []string {
 	Conn.SendRaw(fmt.Sprintf("NAMES %v", channel))
 	time.Sleep(1 * time.Second)
 	
+	Conn.SendRawf("NAMES %v", channel)
 	return ChannelNicks[channel]
 }
 
@@ -170,11 +172,6 @@ func onNames(e *irc.Event) {
 	uniq := removeDuplicates(append(old, nu...))
 
 	ChannelNicks[strings.ToLower(e.Arguments[2])] = uniq
-	log.Printf("Names: %v", uniq)
-}
-
-func onEndOfNames(e *irc.Event) {
-	log.Printf("onEndOfNames: %v", e.Arguments)
 }
 
 func onKick(e *irc.Event) {
@@ -186,7 +183,6 @@ func onKick(e *irc.Event) {
 
 func ConfigureEvents() {
 	Conn.AddCallback("376", onEndOfMotd)
-	Conn.AddCallback("366", onEndOfNames)
 	Conn.AddCallback("353", onNames)
 	Conn.AddCallback("KICK", onKick)
 	Conn.AddCallback("PRIVMSG", onPRIVMSG)

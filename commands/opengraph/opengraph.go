@@ -116,7 +116,15 @@ func openGraphTitle(command *bot.PassiveCmd) (string, error) {
 		Transport: transport, // Time out if connection hangs
 	}
 
-	response, err := client.Get(URL)
+	request, err := http.NewRequest("GET", URL, nil)
+	if err != nil {
+		return "", err
+	}
+
+	request.Header.Set("Accept-Language", "en-US")
+	request.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0")
+
+	response, err := client.Do(request)
 	if err != nil {
 		return "", err
 	}
@@ -149,7 +157,6 @@ func openGraphTitle(command *bot.PassiveCmd) (string, error) {
 
 	doc, err := goquery.NewDocumentFromReader(chunk)
 	if err != nil {
-		fmt.Println(err)
 		return "", err
 	}
 
@@ -163,7 +170,9 @@ func openGraphTitle(command *bot.PassiveCmd) (string, error) {
 	// Get tweet content from <meta>
 	if finalURL == "twitter.com" {
 		doc.Find("meta[property='og:description']").Each(func(i int, s *goquery.Selection) {
-			title = fmt.Sprintf("%s: %s", title, s.AttrOr("content", title))
+			reg := regexp.MustCompile(`(^“|”\z)`)
+			tweet := reg.ReplaceAllString(s.AttrOr("content", title), "") // Strip quotes
+			title = fmt.Sprintf("%s: %s", title, tweet)
 		})
 	}
 
@@ -214,13 +223,15 @@ func openGraphTitle(command *bot.PassiveCmd) (string, error) {
 
 	if finalURL == "www.reddit.com" {
 		thread_title := title
-		if strings.Contains(response.Request.URL.Path, "/comments/") {
+		r := regexp.MustCompile(`\/r\/\w+\/comments\/\w+\/\w+\/\w+`)
 
-			response, _ := client.Get(fmt.Sprintf("%s.json", URL))
+		if r.MatchString(response.Request.URL.Path) {
+
+			response, _ := client.Get(fmt.Sprintf("https://www.reddit.com%s.json", response.Request.URL.Path))
 
 			if response.StatusCode != 200 {
 				fmt.Println(response.StatusCode)
-				title = "404 Not Found"
+				title = "Reddit is under heavy load"
 			} else {
 
 				defer response.Body.Close()

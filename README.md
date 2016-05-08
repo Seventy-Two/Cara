@@ -5,14 +5,14 @@ An IRC Bot written in Go - All credit to 0x263b, Cara is just a clowny Porygon2 
 ### Install
 ```
 # Dependencies
-go get github.com/thoj/go-ircevent github.com/steveyen/gkvlite github.com/PuerkitoBio/goquery github.com/dustin/go-humanize github.com/kennygrant/sanitize gopkg.in/xmlpath.v2 github.com/kennygrant/sanitize github.com/kurrik/oauth1a github.com/kurrik/twittergo
+go get -u github.com/thoj/go-ircevent github.com/steveyen/gkvlite github.com/PuerkitoBio/goquery github.com/dustin/go-humanize github.com/kennygrant/sanitize gopkg.in/xmlpath.v2 github.com/kurrik/oauth1a github.com/kurrik/twittergo
 
 # Cara
 go get github.com/Seventy-Two/Cara
-```
 
-#### APIs
+#### APIs that require keys
 
+* [Bing](https://datamarket.azure.com/dataset/bing/search): [commands/bing](commands/bing/images.go)
 * [Giphy](https://github.com/Giphy/GiphyAPI): [commands/giphy](commands/giphy/giphy.go)
 * [Google Geocode](https://developers.google.com/maps/documentation/geocoding/intro): [commands/weather](commands/weather/weather.go)
 * [Last.fm](http://www.last.fm/api): [commands/lastfm](commands/lastfm/)
@@ -21,15 +21,28 @@ go get github.com/Seventy-Two/Cara
 * [Twitter](https://dev.twitter.com/rest/public): [commands/twitter](commands/twitter/twitter.go)
 * [Wolfram Alpha](http://products.wolframalpha.com/api/): [commands/wolfram](commands/wolfram/wolfram.go)
 * [Youtube](https://developers.google.com/youtube/v3/): [commands/youtube](commands/youtube/youtube.go)
+* [Dota2](https://steamcommunity.com/dev/apikey): [commands/dota](commands/dota/dota.go)
+* [Omdb](http://omdbapi.com/): [commands/omdb](commands/omdb/omdb.go)
+* [Football/Soccer](http://api.football-data.org/): [commands/divegrass](commands/divegrass/divegrass.go)
+* [Wordnik](http://api.wordnik.com): [commands/dictionary](commands/dictionary/dictionary.go)
 
 ***
 
 ### Functions
 
 * [8ball](#8ball)
-* [Google](#google)
+* [Bing](#bing)
+* [Carapic](#carapic)
+* [Dictionary](#dictionary)
+* [DotA2](#DotA2)
+* [Football/Soccer](#divegrass)
 * [Lastfm](#lastfm)
+* [Omdb](#omdb)
 * [Random](#random)
+* [Roll](#roll)
+* [Stocks](#stocks)
+* [Translate](#translate)
+* [TVMaze](#tvmaze)
 * [Twitter](#twitter)
 * [Urban Dictionary](#urban-dictionary)
 * [URL Parser](#url-parser)
@@ -37,7 +50,9 @@ go get github.com/Seventy-Two/Cara
 * [Weather](#weather)
 * [WolframAlpha](#wolframalpha)
 * [Youtube](#youtube)
+
 * [Admin functions](#admin-functions)
+
 
 ***
 
@@ -50,13 +65,69 @@ Gives and 8ball style answer to a *question*
 	My sources say no
 
 
-### Google
-Gets the first result from [Google](https://www.google.com/)/[Google Images](https://images.google.com/) for *search query*
+### Bing
+Gets the first result from [Bing](https://www.bing.com/) for *search query*
 
 **.g/.google** *search query*
 
 	.google Richard Stallman
 	Google | Richard Stallman's Personal Page | http://stallman.org/
+
+**.b/.bing** *search query*
+
+	.bing Richard Stallman
+	Bing | Richard Stallman's Personal Page | http://stallman.org/
+
+Gets the first result from [Bing image search](https://www.bing.com/images) for *search query*
+
+**.img** *search query*
+
+	.img Richard Stallman
+	Bing | Richard Stallman → image/jpeg 257 kB | http://www.straferight.com/photopost/data/500/richard-stallman.jpg
+
+### Carapic
+Returns a randomly selected image of Cara Delevingne from Big Dave's personal collection.
+
+**.carapic**
+
+### Dictionary 
+Returns the word of the day from Wordnik
+
+**.word/.wotd**
+
+Returns the Wordnik dictionary results (up to 3) for the given query
+
+**.dict** *search query*
+
+## Divegrass
+Returns the upcoming games for the given number of days
+
+**.f n** *1-9*
+
+Returns the scores of the games from the past number of days
+
+**.f p** *1-9*
+
+Simulates behaviour of n1
+
+**.f**
+
+## DotA2 
+Returns information on the current games being played. For tier 3 (Premium) games, games with more than 200 viewers are returned. For tier 2 (Professional) games, games with more than 1000 viewers are returned.
+
+**.d2/dota**
+
+Returns heroes picked, along with the above
+
+**.d2h** 
+
+Returns scores along with the game data
+
+**.d2s**
+
+Returns all information 
+
+**.d2hs**
 
 ### Last.fm
 Associates your current irc nick with *user*.
@@ -93,13 +164,41 @@ Sets a nickname for the wp command so that you are not highlighted during wp
 
 **.set nick** *user*
 
+### Omdb
+Returns tags, imdb + rt ratings, and short descriptions of the given query
+
+**.m/.movie** *search query* 
+
 ### Random
 Randomly picks an option from an array separated by |
 
-**.r/.rand** `one | two | three`
+**.rand** `one | two | three`
 
 	.r do work | don't do work
 	don't do work
+
+### Roll
+Rolls the given number of d10s
+
+**.r/.roll** *0-99*
+
+Rolls the given number of dice, of the given number of sides
+
+**.r/.roll** *0-99*d*0-99*
+
+## Stocks
+Returns the current ask price, and the current change in % and USD from the NYSE of the given query. Query format must be a NYSE Symbol.
+
+**.s/.stocks** *Query*
+
+### TVMaze
+Info for *tv show* with episode airtime if available **-tv** *tv show*
+
+	-tv Better call saul
+	TVmaze | Better Call Saul | Airtime: Monday 22:00 on AMC | Status: Running | Next Ep: S2E6 at 22:00 2016-03-21
+	
+	-tv Mr Robot
+	TVmaze | Mr. Robot | Airtime: Wednesday 22:00 on USA Network | Status: Running
 
 
 ### Twitter

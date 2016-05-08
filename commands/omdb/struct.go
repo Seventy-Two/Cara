@@ -20,5 +20,20 @@ type Omdb struct {
 	ImdbVotes string `json:"imdbVotes"`
 	ImdbID string `json:"imdbID"`
 	Type string `json:"Type"`
+	TomatoMeter string `json:"tomatoMeter"`
+	TomatoImage string `json:"tomatoImage"`
+	TomatoRating string `json:"tomatoRating"`
+	TomatoReviews string `json:"tomatoReviews"`
+	TomatoFresh string `json:"tomatoFresh"`
+	TomatoRotten string `json:"tomatoRotten"`
+	TomatoConsensus string `json:"tomatoConsensus"`
+	TomatoUserMeter string `json:"tomatoUserMeter"`
+	TomatoUserRating string `json:"tomatoUserRating"`
+	TomatoUserReviews string `json:"tomatoUserReviews"`
+	TomatoURL string `json:"tomatoURL"`
+	DVD string `json:"DVD"`
+	BoxOffice string `json:"BoxOffice"`
+	Production string `json:"Production"`
+	Website string `json:"Website"`
 	Response string `json:"Response"`
 }

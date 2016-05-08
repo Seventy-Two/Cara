@@ -53,7 +53,7 @@ func getShortHero(id int) (out string) {
 			case 50 : return "Dazzl"
 			case 51 : return "Clock"
 			case 52 : return "Lesh"
-			case 53 : return "Furion"
+			case 53 : return "NP"
 			case 54 : return "Naix"
 			case 55 : return "DS"
 			case 56 : return "Clinkz"

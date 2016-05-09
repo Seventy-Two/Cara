@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	searchURL = "https://api.datamarket.azure.com/Bing/Search/v1/Web?Query='%s'&Options='DisableLocationDetection'&Market='en-US'&$format=json"
+	searchURL = "https://api.datamarket.azure.com/Bing/Search/v1/Web?Query='%s'&Options='DisableLocationDetection'&Market='en-GB'&Adult='Off'&$format=json"
 )
 
 type SearchResults struct {

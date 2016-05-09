@@ -29,7 +29,7 @@ type ImageResults struct {
 func image(command *bot.Cmd, matches []string) (msg string, err error) {
 	client := &http.Client{}
 	request, _ := http.NewRequest("GET", fmt.Sprintf(imageURL, url.QueryEscape(matches[1])), nil)
-	request.SetBasicAuth(bot.Config.TranslateClient, bot.Config.TranslateSecret)
+	request.SetBasicAuth("", bot.Config.TranslateClient)
 
 	response, _ := client.Do(request)
 	defer response.Body.Close()

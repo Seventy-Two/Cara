@@ -69,15 +69,14 @@ Gives and 8ball style answer to a *question*
 ### Bing
 Gets the first result from [Bing](https://www.bing.com/) for *search query*
 
-**.g/.google** *search query*
-
-	.google Richard Stallman
-	Google | Richard Stallman's Personal Page | http://stallman.org/
-
-**.b/.bing** *search query*
+**.g/.google/.b/.bing** *search query*
 
 	.bing Richard Stallman
 	Bing | Richard Stallman's Personal Page | http://stallman.org/
+
+Gets the first result from [Bing](https://www.bing.com/) for *search query*
+
+**.g/.google/.b/.bing[0-9]** *search query*
 
 Gets the first result from [Bing image search](https://www.bing.com/images) for *search query*
 
@@ -85,6 +84,10 @@ Gets the first result from [Bing image search](https://www.bing.com/images) for 
 
 	.img Richard Stallman
 	Bing | Richard Stallman → image/jpeg 257 kB | http://www.straferight.com/photopost/data/500/richard-stallman.jpg
+
+Gets the 0-9th result from [Bing image search](https://www.bing.com/images) for *search query*
+
+**.img[0-9]** *search query*
 
 ### Carapic
 Returns a randomly selected image of Cara Delevingne from Big Dave's personal collection.
@@ -103,11 +106,11 @@ Returns the Wordnik dictionary results (up to 3) for the given query
 ## Divegrass
 Returns the upcoming games for the given number of days
 
-**.f n** *1-9*
+**.f** *n1-9*
 
 Returns the scores of the games from the past number of days
 
-**.f p** *1-9*
+**.f** *p1-9*
 
 Simulates behaviour of n1
 

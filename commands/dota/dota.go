@@ -158,7 +158,7 @@ func towerToString(rad int, dire int) (radTower string, direTower string) {
 	radstr = strings.Replace(radstr, "0", towerDown, -1)
 	radstr = strings.Replace(radstr, "1", towerUp, -1)
 
-	direstr := ancient + fmt.Sprintf("%011b", int64(rad))
+	direstr := ancient + fmt.Sprintf("%011b", int64(dire))
 	direstr = organise(direstr)
 	var tempstr string
 	for _,v := range direstr {

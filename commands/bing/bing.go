@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strconv"
 )
 
 const (
@@ -31,10 +32,19 @@ type SearchResults struct {
 }
 
 func bing(command *bot.Cmd, matches []string) (msg string, err error) {
-	client := &http.Client{}
-	request, _ := http.NewRequest("GET", fmt.Sprintf(searchURL, url.QueryEscape(matches[1])), nil)
-	request.SetBasicAuth("", bot.Config.TranslateClient)
+	var resNo int
+	var querystr string
+	if len(matches) > 1 {
+		resNo, _ = strconv.Atoi(matches[1])
+		querystr = matches[2]
+	} else {
+		querystr = matches[1]
+	}
 
+	client := &http.Client{}
+	request, _ := http.NewRequest("GET", fmt.Sprintf(searchURL, url.QueryEscape(querystr)), nil)
+	request.SetBasicAuth("", bot.Config.TranslateClient)
+	
 	response, _ := client.Do(request)
 	defer response.Body.Close()
 	body, _ := ioutil.ReadAll(response.Body)
@@ -43,25 +53,25 @@ func bing(command *bot.Cmd, matches []string) (msg string, err error) {
 	json.Unmarshal(body, &results)
 
 	if err != nil {
-		return fmt.Sprintf("No results for %s", matches[1]), nil
+		return fmt.Sprintf("No results for %s", querystr), nil
 	}
 
 	if len(results.D.Results) == 0 {
-		return fmt.Sprintf("No results for %s", matches[1]), nil
+		return fmt.Sprintf("No results for %s", querystr), nil
 	}
 
-	output := fmt.Sprintf("Bing | %s | %s ",
-		results.D.Results[0].Title,
-		results.D.Results[0].URL)
+	output := fmt.Sprintf("%s | %s",
+		results.D.Results[resNo].Title,
+		results.D.Results[resNo].URL)
 	return output, nil
 }
 
 func init() {
 	bot.RegisterCommand(
-		"^b(?:ing)? (.+)$",
+		"^b(?:ing)?([0-9])? (.+)$",
 		bing)
 
 	bot.RegisterCommand(
-		"^g(?:oogle)? (.+)$",
+		"^g(?:oogle)?([0-9])? (.+)$",
 		bing)
 }

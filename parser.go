@@ -26,7 +26,7 @@ func parse(s string, channel string, nick string) *Cmd {
 
 	s = strings.TrimSpace(s)
 
-	if !strings.HasPrefix(s, Config.User) && !strings.HasPrefix(s, Config.Prefix){
+	if !strings.HasPrefix(s, Config.User) && !strings.HasPrefix(s, Config.Prefix) &&!strings.HasPrefix(s, Config.AltPrefix){
 		return nil
 	}
 
@@ -36,8 +36,10 @@ func parse(s string, channel string, nick string) *Cmd {
 	if strings.HasPrefix(s, Config.User){
 		c.Message = strings.TrimPrefix(s, Config.User + ":")
 		c.Message = strings.TrimPrefix(c.Message, Config.User + ",")
-	} else {
+	} else if !GetChannelKey(channel, "prefix") {
 		c.Message = strings.TrimPrefix(s, Config.Prefix)
+	} else {
+		c.Message = strings.TrimPrefix(s, Config.AltPrefix)
 	}
 	c.Message = strings.TrimSpace(c.Message)
 

@@ -25,11 +25,15 @@ func dotamatches(command *bot.Cmd, matches []string) (msg []string, err error) {
 	var worth int
 	heroes := false
 	showScore := false
+	showTowers := false
 	if strings.Contains(matches[0], "h") {
 		heroes = true
 	}
 	if strings.Contains(matches[0], "s") {
 		showScore = true
+	}
+	if strings.Contains(matches[0], "t") {
+		showTowers = true
 	}
 	err = web.GetJSON(fmt.Sprintf(dotaListingURL, bot.Config.API.Dota), listing)
 	if err != nil {
@@ -94,11 +98,17 @@ func dotamatches(command *bot.Cmd, matches []string) (msg []string, err error) {
 				}
 			}
 			worth = radiantNet - direNet
-			if showScore {
+			if showTowers {
 				radTower, direTower = towerToString(data.Result.Games[i].Scoreboard.Radiant.TowerState, data.Result.Games[i].Scoreboard.Dire.TowerState)
 			}
 			if heroes {
 	 			herostr = fmt.Sprintf("\x0303%s\x03\x0304%s\x03|", strings.Join(radHeroes[:], "\x03|\x0303"), strings.Join(direHeroes[:], "\x03|\x0304"))
+	 		}
+	 		if dire == "" {
+	 			dire = "Dire"
+	 		}
+	 		if radiant == "" {
+	 			radiant = "Radiant"
 	 		}
 	 		if showScore && worth != 0 {
 				if worth > 0 {
@@ -214,6 +224,6 @@ func getHerofromID(id int, heroes *GetHeroes) (out string) {
 
 func init() {
 	bot.RegisterMultiCommand(
-		"^(d2|dota)\\s?(h(?:ero)?)?\\s?(s(?:core)?)?$",
+		"^(d2)\\s?(h(?:ero)?)?\\s?(s(?:core)?)?\\s?(t(?:ower)?)?$",
 		dotamatches)
 }

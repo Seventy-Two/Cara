@@ -47,6 +47,24 @@ func listChannels(command *bot.Cmd, matches []string) (msg string, err error) {
 	return output, nil
 }
 
+func setPrefix(command *bot.Cmd, matches []string) (msg string, err error) {
+	if !bot.IsAdmin(command.Nick) || !bot.IsPrivateMsg(command.Channel, command.Nick) {
+		return "", nil
+	}
+
+	onOff := matches[1]
+	channelToToggle := matches[2]
+
+	if onOff == "on" {
+		bot.SetChannelKey(channelToToggle, "prefix", true)
+		return fmt.Sprintf("Alternate prefix enabled in %s", channelToToggle), nil
+	} else if onOff == "off" {
+		bot.SetChannelKey(channelToToggle, "prefix", false)
+		return fmt.Sprintf("Alternate prefix disabled in %s", channelToToggle), nil
+	}
+	return "", nil
+}
+
 func init() {
 	bot.RegisterCommand("^help",
 		help)
@@ -62,4 +80,8 @@ func init() {
 	bot.RegisterCommand(
 		"^list channels$",
 		listChannels)
+
+	bot.RegisterCommand(
+		"^set altprefix (\\S+) (\\S+)$",
+		setPrefix)
 }

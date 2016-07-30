@@ -98,3 +98,17 @@ type Stocks struct {
 		} `json:"results"`
 	} `json:"query"`
 }
+
+type Lookup struct {
+	ResultSet struct {
+		Query string `json:"Query"`
+		Result []struct {
+			Symbol string `json:"symbol"`
+			Name string `json:"name"`
+			Exch string `json:"exch"`
+			Type string `json:"type"`
+			ExchDisp string `json:"exchDisp"`
+			TypeDisp string `json:"typeDisp"`
+		} `json:"Result"`
+	} `json:"ResultSet"`
+}

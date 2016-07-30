@@ -9,16 +9,25 @@ import (
 
 const (
 	URL = "http://query.yahooapis.com/v1/public/yql?q=select+*+from+yahoo.finance.quotes+where+symbol+in+%s&env=http://datatables.org/alltables.env&format=json"
+	LookupURL = "http://autoc.finance.yahoo.com/autoc?query=%s&region=EU&lang=en-GB"
 )
 
 func stocks(command *bot.Cmd, matches []string) (msg string, err error){
+	lookup := &Lookup{}
+	err = web.GetJSON(fmt.Sprintf(LookupURL, matches[1]), lookup)
+	if err != nil {
+		return fmt.Sprintf("There was a problem with your request. %s", err), nil
+	}	
+	if len(lookup.ResultSet.Result) == 0 {
+		return fmt.Sprintf("No results found."), nil
+	}
 	data := &Stocks{}
-	formattedInput := fmt.Sprintf("(\"%s\")", matches[1])
+	formattedInput := fmt.Sprintf("(\"%s\")", lookup.ResultSet.Result[0].Symbol)
 	err = web.GetJSON(fmt.Sprintf(URL, formattedInput), data)
 	if err != nil {
 		return fmt.Sprintf("There was a problem with your request. %s", err), nil
 	}
-	if data.Query.Results.Quote.Ask == "" {
+	if data.Query.Results.Quote.Name == "" {
 		return fmt.Sprintf("No results found."), nil
 	}
 	var change string
@@ -32,12 +41,14 @@ func stocks(command *bot.Cmd, matches []string) (msg string, err error){
 		perc   = fmt.Sprintf("\x0303%s\x03", data.Query.Results.Quote.PercentChange)
 	}
 
-	return fmt.Sprintf("%s | %s %s | %s (%s)", data.Query.Results.Quote.Name,
-													data.Query.Results.Quote.Ask,
-													data.Query.Results.Quote.Currency,
-													change,
-													perc,
-													), nil 
+	return fmt.Sprintf("%s | %s %s | %s (%s) | Exchange: %s (%s)", data.Query.Results.Quote.Name,
+															data.Query.Results.Quote.Bid,
+															data.Query.Results.Quote.Currency,
+															change,
+															perc,
+															lookup.ResultSet.Result[0].ExchDisp,
+															lookup.ResultSet.Result[0].Exch,
+															), nil 
 }
 
 

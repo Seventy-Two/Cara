@@ -263,7 +263,7 @@ Variables are set using **.set url** *url* or **.set twitter** *handle*
 	Weather | Washington | Cloudy 15°C. Wind chill: 15°C. Humidity: 72%
 
 [Yahoo Weather Forecast](http://weather.yahoo.com/) for *location*
-**.f/.fo/.forecast** *location*
+**.fo/.forecast** *location*
 
 	.forecast Washington, DC
 	Forecast | Washington | Sun: Clouds Early/Clearing Late 16°C/10°C | Mon: Mostly Sunny 19°C/8°C | Tue: Mostly Sunny 23°C/11°C | Wed: Partly Cloudy 24°C/11°C

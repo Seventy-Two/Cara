@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"sync"
 	"time"
+	"strings"
 )
 
 // Cmd holds the parsed user's input for easier handling of commands
@@ -159,6 +160,9 @@ func handleCmd(c *Cmd, conn ircConnection) {
 				var messages []string
 				var message string
 				var err error
+				if (!checkLastCmd(c.Channel, c.Message)) {
+					return 
+				}
 				if k.IsMulti {
 					messages, err = k.MultiCmdFunc(c, matches)
 				} else {
@@ -176,6 +180,7 @@ func handleCmd(c *Cmd, conn ircConnection) {
 						}
 					}
 				time.Sleep(1 * time.Second) // Some idiot will probably ask for two 4 line multiline commands simultaneously and Cara will get killed ;_;	 
+				storeLastCmd(c.Channel, c.Message)
 				} 
 		}
 	}
@@ -183,6 +188,18 @@ func handleCmd(c *Cmd, conn ircConnection) {
 	// log.Printf("HandleCmd %v %v", c.Command, c.FullArg)
 
 	return
+}
+
+func checkLastCmd(channel string, message string) bool {
+	if (strings.EqualFold(GetChannelKeyStr(channel, "lastcmd"), message)) {
+		return false
+	} else {
+		return true
+	}
+}
+
+func storeLastCmd(channel string, message string) {
+	SetChannelKeyStr(channel, "lastcmd", message)
 }
 
 func checkCmdError(err error, c *Cmd, conn ircConnection) {

@@ -59,6 +59,19 @@ func getKeyString(nick string) map[string]string {
 	return decoded
 }
 
+func getChannelKeyString(channel string) map[string]string {
+	decoded := make(map[string]string)
+	chann, _ := Channels.Get([]byte(channel))
+	if chann == nil {
+		return nil
+	}
+	err := getInterface(chann, &decoded)
+	if err != nil {
+		return nil
+	}
+	return decoded
+}
+
 func GetUserKey(nick string, key string) string {
 	nick = strings.ToLower(nick)
 	user := getKeyString(nick)
@@ -136,4 +149,30 @@ func SetChannelKey(channel string, key string, value bool) {
 
 	Channels.Set([]byte(channel), byt)
 	KV.Flush()
+}
+
+
+func SetChannelKeyStr(channel string, key string, value string) {
+	channel = strings.ToLower(channel)
+	chann := getChannelKeyString(channel)
+	if chann == nil {
+		chann = map[string]string{
+			key: value,
+		}
+	} else {
+		chann[key] = value
+	}
+
+	val := reflect.ValueOf(chann)
+	in := val.Interface()
+	byt, _ := getBytes(in)
+
+	Channels.Set([]byte(channel), byt)
+	KV.Flush()
+}
+
+func GetChannelKeyStr(channel string, key string) string {
+	channel = strings.ToLower(channel)
+	chann := getChannelKeyString(channel)
+	return chann[key]
 }

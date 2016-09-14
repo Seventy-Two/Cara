@@ -28,6 +28,7 @@ type Configure struct {
 	TLSServerName string // Must supply if UseTLS is true
 	Debug         bool   // This will log all IRC communication to standad output
 	Prefix        string // Prefix used to identify a command. !hello whould be identified as a command
+	AltPrefix	  string
 	Owner         string // Owner of the bot. Used for admin-only commands
 	API
 }
@@ -46,6 +47,11 @@ type API struct {
 	FootballData	      string
 	Dota				  string 
 	Wordnik				  string
+}
+
+type Directory struct {
+	Lean				 string
+	Quotelog		     string
 }
 
 type ircConnection interface {
@@ -73,7 +79,7 @@ func logChannel(channel, text, senderNick string, action bool) {
 	if len(mo) < 2 {
 		mo = fmt.Sprintf("0%s", mo)
 	}
-	f, err := os.OpenFile(fmt.Sprintf("%s/logs/%s.%v.%v.log", dir, channel, t.Year(), mo), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	f, err := os.OpenFile(fmt.Sprintf("%s/logs/%s.log", dir, channel), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		fmt.Printf("error opening file: %v", err)
 	}
